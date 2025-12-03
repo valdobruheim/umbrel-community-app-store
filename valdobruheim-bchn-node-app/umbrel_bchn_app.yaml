@@ -1,0 +1,248 @@
+# Umbrel BCH Node App Package (B2: BCH Node + Custom React Dashboard)
+# Updated package: includes ZIP-ready structure, custom icon placeholder, installation instructions, test script, and extended dashboard pages.
+
+# ───────────────────────────────────────────────────────────────
+# File: umbrel-app.yml
+# Path: apps/bchn-node/umbrel-app.yml
+# ───────────────────────────────────────────────────────────────
+id: bchn-node
+name: "Bitcoin Cash Node"
+version: "0.2.0"
+description: "Run a full Bitcoin Cash Node with a custom web dashboard including mempool, peers, and charts."
+ui: true
+ports:
+  - 3007
+categories:
+  - blockchain
+author: "BCHN / Custom"
+icon: "./icon.png"
+screenshots: []
+path: "/"
+
+# ───────────────────────────────────────────────────────────────
+# File: docker-compose.yml
+# Path: apps/bchn-node/docker-compose.yml
+# ───────────────────────────────────────────────────────────────
+version: "3.7"
+services:
+  bchn-node:
+    image: ghcr.io/bitcoin-cash-node/bitcoin-cash-node:latest
+    container_name: bchn-node
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    ports:
+      - "8335:8333"
+      - "8334:8332"
+    command:
+      - bitcoind
+      - -datadir=/data
+      - -server=1
+      - -txindex=1
+      - -rpcuser=bchnrpc
+      - -rpcpassword=umbrelbchn
+
+  dashboard:
+    build: ./dashboard
+    container_name: bchn-dashboard
+    restart: unless-stopped
+    ports:
+      - "3007:3000"
+    environment:
+      - RPC_HOST=bchn-node
+      - RPC_PORT=8332
+      - RPC_USER=bchnrpc
+      - RPC_PASS=umbrelbchn
+    depends_on:
+      - bchn-node
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/Dockerfile
+# ───────────────────────────────────────────────────────────────
+FROM node:18-alpine
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "start-server"]
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/package.json
+# ───────────────────────────────────────────────────────────────
+{
+  "name": "bchn-dashboard",
+  "version": "0.2.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.4.0",
+    "vite": "^5.0.0",
+    "recharts": "^2.7.2",
+    "express": "^4.18.2"
+  },
+  "scripts": {
+    "start": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "start-server": "node server.js"
+  }
+}
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/vite.config.js
+# ───────────────────────────────────────────────────────────────
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+export default defineConfig({
+  plugins: [react()],
+  server: { host: true, port: 3000 }
+});
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/src/main.jsx
+# ───────────────────────────────────────────────────────────────
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/src/App.jsx
+# ───────────────────────────────────────────────────────────────
+import { useEffect, useState } from "react";
+import axios from "axios";
+import DashboardPage from "./pages/DashboardPage";
+import PeersPage from "./pages/PeersPage";
+import MempoolPage from "./pages/MempoolPage";
+
+export default function App() {
+  const [page, setPage] = useState('dashboard');
+
+  return (
+    <div style={{ padding: 20, fontFamily: 'Arial' }}>
+      <h1>Bitcoin Cash Node Dashboard</h1>
+      <nav>
+        <button onClick={() => setPage('dashboard')}>Dashboard</button>
+        <button onClick={() => setPage('peers')}>Peers</button>
+        <button onClick={() => setPage('mempool')}>Mempool</button>
+      </nav>
+      <div style={{ marginTop: 20 }}>
+        {page === 'dashboard' && <DashboardPage />}
+        {page === 'peers' && <PeersPage />}
+        {page === 'mempool' && <MempoolPage />}
+      </div>
+    </div>
+  );
+}
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/src/pages/DashboardPage.jsx
+# ───────────────────────────────────────────────────────────────
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+export default function DashboardPage() {
+  const [info, setInfo] = useState(null);
+  useEffect(() => {
+    axios.post('/api/rpc', { method: 'getblockchaininfo', params: [] })
+      .then(res => setInfo(res.data.result))
+      .catch(console.error);
+  }, []);
+
+  if(!info) return <p>Loading...</p>;
+  return (
+    <div>
+      <p><b>Chain:</b> {info.chain}</p>
+      <p><b>Blocks:</b> {info.blocks}</p>
+      <p><b>Headers:</b> {info.headers}</p>
+      <p><b>Difficulty:</b> {info.difficulty}</p>
+      <p><b>Verification Progress:</b> {info.verificationprogress}</p>
+    </div>
+  );
+}
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/src/pages/PeersPage.jsx
+# ───────────────────────────────────────────────────────────────
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+export default function PeersPage() {
+  const [peers, setPeers] = useState([]);
+  useEffect(() => {
+    axios.post('/api/rpc', { method: 'getpeerinfo', params: [] })
+      .then(res => setPeers(res.data.result))
+      .catch(console.error);
+  }, []);
+  return (
+    <div>
+      <h2>Connected Peers</h2>
+      {peers.map((p,i) => <div key={i}>{p.addr} - {p.subver}</div>)}
+    </div>
+  );
+}
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/src/pages/MempoolPage.jsx
+# ───────────────────────────────────────────────────────────────
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+export default function MempoolPage() {
+  const [mempool, setMempool] = useState([]);
+  useEffect(() => {
+    axios.post('/api/rpc', { method: 'getrawmempool', params: [] })
+      .then(res => setMempool(res.data.result))
+      .catch(console.error);
+  }, []);
+  return (
+    <div>
+      <h2>Mempool Transactions ({mempool.length})</h2>
+      <ul>
+        {mempool.map(txid => <li key={txid}>{txid}</li>)}
+      </ul>
+    </div>
+  );
+}
+
+# ───────────────────────────────────────────────────────────────
+# File: dashboard/server.js
+# ───────────────────────────────────────────────────────────────
+import express from 'express';
+import axios from 'axios';
+const app = express();
+app.use(express.json());
+const { RPC_HOST, RPC_PORT, RPC_USER, RPC_PASS } = process.env;
+app.post('/api/rpc', async (req, res) => {
+  try {
+    const payload = { jsonrpc: '1.0', id: 'umbrel-bch', method: req.body.method, params: req.body.params || [] };
+    const rpcResponse = await axios.post(`http://${RPC_HOST}:${RPC_PORT}`, payload, {
+      auth: { username: RPC_USER, password: RPC_PASS }
+    });
+    res.json(rpcResponse.data);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.listen(3000, () => console.log('Dashboard RPC Proxy running'));
+
+# ───────────────────────────────────────────────────────────────
+# File: install_instructions.txt
+# ───────────────────────────────────────────────────────────────
+1. SSH into your Umbrel device.
+2. Copy the `apps/bchn-node/` folder into `~/umbrel/app-store/apps/`.
+3. Navigate to the folder: `cd ~/umbrel/app-store/apps/bchn-node/`
+4. Run: `docker compose up -d`
+5. Access the dashboard at `http://<umbrel-ip>:3007`
+6. Node RPC is exposed for Electron Cash or other BCH clients.
+
+# ───────────────────────────────────────────────────────────────
+# File: test_rpc.sh
+# ───────────────────────────────────────────────────────────────
+#!/bin/bash
+curl -s -X POST http://localhost:3007/api/rpc \
+  -H 'Content-Type: application/json' \
+  -d '{"method": "getblockchaininfo", "params": []}' | jq
+
+# ───────────────────────────────────────────────────────────────
+# File: icon.png
+# ───────────────────────────────────────────────────────────────
+# (Place any 512x512 PNG here, preferably BCH logo)
+
+# END OF PACKAGE

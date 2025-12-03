@@ -1,0 +1,15 @@
+id: node-exporter
+name: Node Exporter
+version: 1.1.0
+category: system
+icon: ./icon-nodeexporter.png
+port: 9100
+
+services:
+  - node-exporter
+
+depends_on:
+  - prometheus
+
+description: "Node Exporter for hardware and OS metrics."
+repository: "https://github.com/your/node-exporter-app"
