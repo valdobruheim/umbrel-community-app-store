@@ -7,8 +7,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus-data:/prometheus
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ${APP_DATA_DIR}/prometheus-data:/prometheus
+      - ${APP_DATA_DIR}/prometheus-data:/etc/prometheus/prometheus.yml:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
