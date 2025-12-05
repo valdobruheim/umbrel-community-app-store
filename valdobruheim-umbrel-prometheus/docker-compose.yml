@@ -6,7 +6,7 @@ services:
       # The format here is: <app-id>_<docker-service-name>_1
       APP_HOST: valdobruheim-umbrel-prometheus_server_1
       APP_PORT: 9090
-  prometheus:
+  server:
     image: prom/prometheus:latest
     container_name: prometheus
     #volumes:
