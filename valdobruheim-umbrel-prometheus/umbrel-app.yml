@@ -5,8 +5,20 @@ version: 1.1.0
 category: system
 icon: ./icon-prometheus.png
 port: 9090
+description: >-
+  Prometheus metrics collection and storage engine.
+
+  For more information about Prometheus follow the link: https://prometheus.io
+developer: The Linux Foundation
+website: https://prometheus.io
+submitter: Valdo Bruheim
+submission: https://github.com/valdobruheim/umbrel-community-app-store
+repo: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdobruheim-umbrel-prometheus
+support: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdobruheim-umbrel-prometheus/issues
+gallery: []
+releaseNotes: >-
+  First release.
+dependencies: []
 path: ""
 defaultUsername: ""
 defaultPassword: ""
-description: "Prometheus metrics collection and storage engine."
-repository: "https://github.com/valdobruheim/umbrel-community-app-store/valdobruheim-umbrel-prometheus"
