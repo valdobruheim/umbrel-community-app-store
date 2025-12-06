@@ -1,0 +1,23 @@
+manifestVersion: 1
+id: valdobruheim-umbrel-node-exporter
+name: Node Exporter
+version: 3.7
+category: monitoring
+icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/node-exporter-logo.png?raw=true
+port: 9090
+description: >-
+  Prometheus exporter for hardware and OS metrics exposed by *NIX kernels, written in Go with pluggable metric collectors..
+
+  For more information about Prometheus follow the link: https://github.com/prometheus/node_exporter
+developer: The Linux Foundation
+website: https://github.com/prometheus/node_exporter
+submitter: Valdo Bruheim
+submission: https://github.com/valdobruheim/umbrel-community-app-store
+repo: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdobruheim-umbrel-node-exporter
+gallery: []
+releaseNotes: >-
+  The current release is 3.7. For more information refer to https://github.com/prometheus/node_exporter
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""

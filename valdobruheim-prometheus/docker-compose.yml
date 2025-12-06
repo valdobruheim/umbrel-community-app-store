@@ -1,5 +1,3 @@
-version: "1.0"
-
 services:
   app_proxy:
     environment:
@@ -10,7 +8,8 @@ services:
   server:
     image: prom/prometheus:latest
     container_name: prometheus_server_1
-    #volumes:
-    #  - ${APP_DATA_DIR}/prometheus-data:/prometheus
-    #  - ${APP_DATA_DIR}/prometheus-data:/etc/prometheus/prometheus.yml:ro
+    user: '1000:1000'
+    volumes:
+      - ${APP_DATA_DIR}/prometheus-data:/prometheus
+      - ${APP_DATA_DIR}/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     restart: unless-stopped

@@ -1,9 +1,9 @@
 manifestVersion: 1
 id: valdobruheim-umbrel-prometheus
 name: Prometheus
-version: 1.1.0
-category: system
-icon: ./icon-prometheus.png
+version: 3.8.0
+category: monitoring
+icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/prometheus-logo.png?raw=true
 port: 9090
 description: >-
   Prometheus metrics collection and storage engine.
@@ -17,7 +17,7 @@ repo: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdo
 support: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdobruheim-umbrel-prometheus/issues
 gallery: []
 releaseNotes: >-
-  First release.
+  The current release is 3.8.0. For more information refer to https://prometheus.io
 dependencies: []
 path: ""
 defaultUsername: ""

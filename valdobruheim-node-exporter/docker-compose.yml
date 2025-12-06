@@ -1,0 +1,14 @@
+services:
+  app_proxy:
+    environment:
+      APP_HOST: node-exporter_server_1
+      APP_PORT: 9100
+      container_name: node-exporter_app_proxy_1
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter_server_1
+    user: '1000:1000'
+    pid: host
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
