@@ -3,7 +3,7 @@ id: valdobruheim-umbrel-prometheus
 name: Prometheus
 version: 3.8.0
 category: monitoring
-icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/prometheus-logo.png?raw=true
+icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/prometheus-logo.svg?raw=true
 port: 9090
 description: >-
   Prometheus metrics collection and storage engine.
