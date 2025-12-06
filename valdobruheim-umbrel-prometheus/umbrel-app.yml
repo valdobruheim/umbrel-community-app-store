@@ -1,5 +1,5 @@
 manifestVersion: 1
-id: valdobruheim-prometheus
+id: valdobruheim-umbrel-prometheus
 name: Prometheus
 version: 3.8.0
 category: monitoring

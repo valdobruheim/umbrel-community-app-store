@@ -1,5 +1,5 @@
 manifestVersion: 1
-id: valdobruheim-node-exporter
+id: valdobruheim-umbrel-node-exporter
 name: Node Exporter
 version: 3.7
 category: monitoring
