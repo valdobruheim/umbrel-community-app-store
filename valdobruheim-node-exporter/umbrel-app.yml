@@ -1,5 +1,5 @@
 manifestVersion: 1
-id: valdobruheim-umbrel-node-exporter
+id: valdobruheim-node-exporter
 name: Node Exporter
 version: 3.7
 category: monitoring
@@ -16,7 +16,7 @@ submission: https://github.com/valdobruheim/umbrel-community-app-store
 repo: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdobruheim-umbrel-node-exporter
 gallery: []
 releaseNotes: >-
-  The current release is 3.7. For more information refer to https://github.com/prometheus/node_exporter
+  For more information refer to https://github.com/prometheus/node_exporter
 dependencies: []
 path: ""
 defaultUsername: ""
