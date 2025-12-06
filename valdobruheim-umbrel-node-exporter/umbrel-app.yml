@@ -4,7 +4,7 @@ name: Node Exporter
 version: 3.7
 category: monitoring
 icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/node-exporter-logo.png?raw=true
-port: 9090
+port: 9100
 description: >-
   Prometheus exporter for hardware and OS metrics exposed by *NIX kernels, written in Go with pluggable metric collectors..
 
