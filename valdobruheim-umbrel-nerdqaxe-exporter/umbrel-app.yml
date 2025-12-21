@@ -1,10 +1,10 @@
 manifestVersion: 1
 id: valdobruheim-umbrel-nerdqaxe-exporter
 name: nerdqaxe-exporter
-version: 3.8.0
+version: 1.0.0
 category: monitoring
 icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/bitaxe-metrics.jpg?raw=true
-port: 9090
+port: 7979
 description: >-
   Json Exporter to collect metrics from NerdQAxe.
 developer: The Linux Foundation
