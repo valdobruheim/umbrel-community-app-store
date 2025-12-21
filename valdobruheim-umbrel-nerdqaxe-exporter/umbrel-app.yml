@@ -1,0 +1,22 @@
+manifestVersion: 1
+id: valdobruheim-umbrel-nerqaxe-exporter
+name: nerdqaxe-exporter
+version: 3.8.0
+category: monitoring
+icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/bitaxe-metrics.jpg?raw=true
+port: 9090
+description: >-
+  Json Exporter to collect metrics from NerdQAxe.
+developer: The Linux Foundation
+website: "https://github.com/prometheus-community/json_exporter"
+submitter: Valdo Bruheim
+submission: https://github.com/valdobruheim/umbrel-community-app-store
+repo: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdobruheim-umbrel-nerdqaxe-exporter
+support: 
+gallery: []
+releaseNotes: >-
+  For more information refer to https://github.com/prometheus-community/json_exporter
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""

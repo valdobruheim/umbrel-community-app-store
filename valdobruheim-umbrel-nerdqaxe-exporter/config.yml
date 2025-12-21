@@ -1,0 +1,64 @@
+metrics:
+  # --- 1. PRIMARY SYSTEM & MINING METRICS ---
+  - name: nerdaxe_stats
+    type: object
+    help: "Real-time performance metrics from the Nerdaxe API"
+    path: "{"
+    labels:
+      hostname: "{ .hostname }"
+      hostip: "{ .hostip }"
+      device_model: "{ .deviceModel }"
+      version: "{ .version }"
+    values:
+      hashrate_ghs: "{ .hashRate }"
+      hashrate_1m: "{ .hashRate_1m }"
+      hashrate_10m: "{ .hashRate_10m }"
+      hashrate_1h: "{ .hashRate_1h }"
+      temp_celsius: "{ .temp }"
+      vr_temp_celsius: "{ .vrTemp }"
+      power_watts: "{ .power }"
+      voltage_mv: "{ .voltage }"
+      current_ma: "{ .current }"
+      fanspeed_percent: "{ .fanspeed }"
+      fan_rpm: "{ .fanrpm }"
+      shares_accepted: "{ .sharesAccepted }"
+      shares_rejected: "{ .sharesRejected }"
+      best_diff: "{ .bestDiff }"
+      wifi_rssi_dbm: "{ .wifiRSSI }"
+      uptime_seconds: "{ .uptimeSeconds }"
+      free_heap: "{ .freeHeap }"
+
+  # --- 2. STRATUM & POOL ARRAY METRICS ---
+  # This iterates through the "pools" list to handle multiple targets
+  - name: nerdaxe_pool
+    type: object
+    help: "Detailed statistics for configured mining pools"
+    path: "{ .stratum.pools[*] }"
+    labels:
+      hostname: "{ .hostname }"
+      hostip: "{ .hostip }"
+      pool_index: "{ .__index }"
+    values:
+      connected: "{ .connected }" # 1 = connected, 0 = disconnected
+      accepted: "{ .accepted }"
+      rejected: "{ .rejected }"
+      ping_ms: "{ .pingRtt }"
+      difficulty: "{ .poolDifficulty }"
+      best_diff: "{ .bestDiff }"
+
+  # --- 3. HARDWARE CAPABILITIES & LIMITS ---
+  # Extracted from your second JSON sample
+  - name: nerdaxe_hw_config
+    type: object
+    help: "Static hardware specifications and safety limits"
+    path: "{"
+    labels:
+      hostname: "{ .hostname }"
+      asic_model: "{ .ASICModel }"
+    values:
+      asic_count: "{ .asicCount }"
+      default_freq: "{ .defaultFrequency }"
+      default_volt: "{ .defaultVoltage }"
+      max_freq_limit: "{ .absMaxFrequency }"
+      max_volt_limit: "{ .absMaxVoltage }"
+      core_count: "{ .smallCoreCount }"
