@@ -8,5 +8,10 @@ developer: Umbrel
 website: https://umbrel.com/
 submitter: Valdo Bruheim
 repo: https://github.com/valdobruheim/umbrel-community-app-store
-#support: 
 port: 3005
+gallery: []
+#releaseNotes: 
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
