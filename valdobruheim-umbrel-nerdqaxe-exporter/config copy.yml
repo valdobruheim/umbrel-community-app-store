@@ -82,3 +82,83 @@ modules:
       labels:
         hostname: '{ .hostname }'
         hostip: '{ .hostip }'
+
+
+"stratum": {
+  "poolMode": 1,
+  "activePoolMode": 1,
+  "poolBalance": 90,
+  "totalBestDiff": 133526453,
+  "pools": [
+    {
+      "connected": true,
+      "poolDifficulty": 4096,
+      "poolDiffErr": false,
+      "accepted": 1526,
+      "rejected": 0,
+      "pingRtt": 7.857142857,
+      "pingLoss": 0,
+      "bestDiff": 11368058
+    },
+    {
+      "connected": true,
+      "poolDifficulty": 1024,
+      "poolDiffErr": false,
+      "accepted": 621,
+      "rejected": 1,
+      "pingRtt": 5.857142857,
+      "pingLoss": 0,
+      "bestDiff": 554358
+    }
+  ]
+},
+"poolDifficulty": 4096,
+"foundBlocks": 0,
+"totalFoundBlocks": 0,
+"sharesAccepted": 2147,
+"sharesRejected": 1,
+"bestDiff": 133526453,
+"bestSessionDiff": 11368058,
+"asicTemps": [
+  0,
+  0,
+  0,
+  0
+],
+"pidTargetTemp": 55,
+"pidP": 6,
+"pidI": 0.1,
+"pidD": 10,
+"hostname": "NerdQAxe-02",
+"ssid": "Taboo24",
+"stratumURL": "stratum.braiins.com",
+"stratumPort": 3333,
+"stratumUser": "valdobruheim.NerdQAxe02",
+"stratumEnonceSubscribe": true,
+"fallbackStratumURL": "umbrel.local",
+"fallbackStratumPort": 2018,
+"fallbackStratumUser": "bc1qvtgt0fl43755fu6ahm5g6lq3ggl90leaddj27n.NerdQAxe02",
+"fallbackStratumEnonceSubscribe": true,
+"frequency": 600,
+"defaultFrequency": 600,
+"jobInterval": 500,
+"stratumDifficulty": 1000,
+"overheat_temp": 90,
+"flipscreen": 0,
+"invertscreen": 0,
+"autoscreenoff": 0,
+"invertfanpolarity": 0,
+"autofanspeed": 2,
+"stratum_keep": 1,
+"vrFrequency": 25011,
+"defaultVrFrequency": 25011,
+"otp": false,
+"ASICModel": "BM1370",
+"uptimeSeconds": 6475,
+"lastResetReason": "SYSTEM.RESET_SOFTWARE",
+"wifiStatus": "Connected!",
+"freeHeap": 7305676,
+"freeHeapInt": 92624,
+"version": "v1.0.35",
+"runningPartition": "factory",
+"defaultTheme": "cosmic"

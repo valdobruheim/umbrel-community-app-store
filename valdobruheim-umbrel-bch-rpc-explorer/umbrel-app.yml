@@ -1,0 +1,12 @@
+manifestVersion: 1
+id: valdobruheim-umbrel-bch-rpc-explorer
+name: BCH Explorer
+version: "3.5.1"
+description: A simple, self-hosted explorer for your BCH node based on the official Umbrel btc-rpc-explorer.
+icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/bch-rpc-logo.png?raw=true
+developer: Umbrel
+website: https://umbrel.com/
+submitter: Valdo Bruheim
+repo: https://github.com/valdobruheim/umbrel-community-app-store
+#support: 
+port: 3005
