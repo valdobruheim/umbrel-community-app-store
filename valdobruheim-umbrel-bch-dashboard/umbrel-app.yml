@@ -1,0 +1,21 @@
+manifestVersion: 1
+id: valdobruheim-umbrel-bch-dashboard
+name: BCH Dashboard
+version: 1
+category: monitoring
+icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/bch-rpc-logo.png?raw=true
+port: 3015
+description: >-
+  BCH Dashboard.
+developer: Valdo Bruheim
+website: ""
+submitter: Valdo Bruheim
+submission: https://github.com/valdobruheim/umbrel-community-app-store
+repo: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdobruheim-umbrel-bch-dashboard
+gallery: []
+releaseNotes: >-
+  1 - A simple BCH dashboard
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
