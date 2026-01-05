@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCH Node Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap');
+        :root { --umbrel-bg: #0b0e14; }
+        .dark body { background-color: var(--umbrel-bg); font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-card { @apply bg-white/5 border border-white/10 rounded-[2rem] p-6 backdrop-blur-sm transition-all duration-300 hover:border-green-500/40; }
+        .stat-label { @apply text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-1; }
+    </style>
+</head>
+<body class="text-white">
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-[#111827] border-r border-gray-800 p-6 flex flex-col fixed h-full">
+            <div class="flex items-center mb-12 px-2">
+                <div class="bg-green-500 w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-lg shadow-green-500/20">
+                    <i class="fa-solid fa-cube text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h1 class="font-bold text-lg leading-tight">BCH Node</h1>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest">Full Node</p>
+                </div>
+            </div>
+            
+            <nav class="flex-1 space-y-2">
+                <a href="#" class="flex items-center p-4 text-green-400 bg-green-500/10 rounded-2xl group">
+                    <i class="fa-solid fa-house w-6 text-lg"></i>
+                    <span class="ml-3 font-semibold">Overview</span>
+                </a>
+                <a href="#" class="flex items-center p-4 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition group">
+                    <i class="fa-solid fa-microchip w-6 text-lg"></i>
+                    <span class="ml-3 font-semibold">Console</span>
+                </a>
+            </nav>
+
+            <button id="theme-toggle" class="mt-auto flex items-center p-4 text-gray-400 hover:text-white bg-white/5 rounded-2xl border border-white/5 transition">
+                <i id="theme-icon" class="fa-solid fa-moon w-6"></i>
+                <span class="ml-3 font-semibold">Dark Mode</span>
+            </button>
+        </aside>
+
+        <main class="ml-64 flex-1 p-10">
+            <header class="flex justify-between items-center mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight">Dashboard</h2>
+                    <p id="node-version" class="text-gray-500 text-sm mt-1 font-mono">Loading version...</p>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white/5 border border-white/10 px-5 py-2.5 rounded-2xl flex items-center">
+                        <span class="text-green-500 mr-3 text-xs font-bold">BCH/USD</span>
+                        <span id="bch-price" class="font-mono font-bold">$--.--</span>
+                    </div>
+                    <div id="health-badge" class="flex items-center space-x-3 px-5 py-2.5 rounded-2xl border border-gray-800 bg-gray-900/50">
+                        <span id="health-dot" class="w-2.5 h-2.5 rounded-full bg-gray-600"></span>
+                        <span id="health-text" class="text-sm font-bold uppercase tracking-tight text-gray-400">Syncing...</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+                <div class="glass-card">
+                    <p class="stat-label text-green-500/80">Current Blocks</p>
+                    <h3 id="block-height" class="text-4xl font-mono font-bold tracking-tighter">-------</h3>
+                    <p id="block-diff" class="text-gray-500 text-xs mt-3 font-medium">Fetching network tip...</p>
+                </div>
+
+                <div class="glass-card">
+                    <p class="stat-label">Mempool Size</p>
+                    <h3 id="mempool-tx" class="text-4xl font-mono font-bold tracking-tighter">--- <span class="text-lg text-gray-500 font-normal">TX</span></h3>
+                    <p class="text-gray-500 text-xs mt-3 font-medium">Memory usage: <span id="mempool-mb">0.0</span> MB</p>
+                </div>
+
+                <div class="glass-card">
+                    <p class="stat-label">Active Peers</p>
+                    <h3 id="peers" class="text-4xl font-mono font-bold tracking-tighter">--</h3>
+                    <p class="text-gray-500 text-xs mt-3 font-medium">Network: Mainnet</p>
+                </div>
+            </div>
+
+            <div class="glass-card p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h4 class="font-bold text-lg">Mempool Volume</h4>
+                    <span class="text-[10px] bg-green-500/20 text-green-400 px-3 py-1 rounded-full font-bold uppercase tracking-widest">Real-time</span>
+                </div>
+                <div class="h-[300px]">
+                    <canvas id="mempoolChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Initialization ---
+        const ctx = document.getElementById('mempoolChart').getContext('2d');
+        const mempoolChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Transactions',
+                    data: [],
+                    borderColor: '#22c55e',
+                    backgroundColor: (context) => {
+                        const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 400);
+                        gradient.addColorStop(0, 'rgba(34, 197, 94, 0.2)');
+                        gradient.addColorStop(1, 'rgba(34, 197, 94, 0)');
+                        return gradient;
+                    },
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { 
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
+                        ticks: { color: '#6b7280', font: { family: 'JetBrains Mono', size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // --- Data Fetching ---
+        async function updateDashboard() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+
+                // 1. Core Stats
+                document.getElementById('block-height').innerText = data.blocks.toLocaleString();
+                document.getElementById('mempool-tx').innerHTML = `${data.mempool.toLocaleString()} <span class="text-lg text-gray-500 font-normal">TX</span>`;
+                document.getElementById('peers').innerText = data.peers;
+                document.getElementById('bch-price').innerText = `$${data.price.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                document.getElementById('node-version').innerText = data.version || 'BCHN';
+
+                // 2. Network Health
+                const badge = document.getElementById('health-badge');
+                const dot = document.getElementById('health-dot');
+                const statusText = document.getElementById('health-text');
+                const blockDiff = document.getElementById('block-diff');
+
+                blockDiff.innerText = data.diff === 0 ? "Perfectly synced with network" : `${data.diff} blocks behind network`;
+
+                if (data.health === 'Healthy') {
+                    badge.className = "flex items-center space-x-3 px-5 py-2.5 rounded-2xl border border-green-500/30 bg-green-500/10 text-green-400";
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]";
+                    statusText.innerText = "Healthy";
+                } else {
+                    badge.className = "flex items-center space-x-3 px-5 py-2.5 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 text-yellow-400";
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-yellow-500";
+                    statusText.innerText = data.health;
+                }
+
+                // 3. Chart Update
+                const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                if (mempoolChart.data.labels.length > 30) {
+                    mempoolChart.data.labels.shift();
+                    mempoolChart.data.datasets[0].data.shift();
+                }
+                mempoolChart.data.labels.push(now);
+                mempoolChart.data.datasets[0].data.push(data.mempool);
+                mempoolChart.update();
+
+            } catch (err) {
+                console.error("Dashboard update failed:", err);
+                document.getElementById('health-text').innerText = "Offline";
+            }
+        }
+
+        // --- Execution ---
+        setInterval(updateDashboard, 10000);
+        updateDashboard();
+    </script>
+</body>
+</html>
