@@ -1,10 +1,7 @@
 version: '3.8'
 services:
   bch-dashboard:
-    build:
-      context: .
-      dockerfile: Dockerfile
-#    container_name: bch-dashboard_server_1
+    image: ghcr.io/valdobruheim/bch-dashboard:latest
     ports:
       - "3015:3015"
     environment:
