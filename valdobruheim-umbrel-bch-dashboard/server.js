@@ -29,6 +29,7 @@ app.get('/api/stats', async (req, res) => {
         const localHeight = bc.blocks;
         const networkHeight = parseInt(networkTipRes.data);
         const diff = networkHeight - localHeight;
+        const version = net.subversion
 
         res.json({
             blocks: localHeight,
@@ -38,7 +39,8 @@ app.get('/api/stats', async (req, res) => {
             price: priceRes.data['bitcoin-cash'].usd,
             // Health Logic: Healthy if diff <= 1 block
             health: diff <= 1 ? 'Healthy' : (diff > 50 ? 'Syncing' : 'Lagging'),
-            diff: diff
+            diff: diff,
+            version: version
         });
     } catch (error) {
         res.status(500).json({ health: 'Offline' });
