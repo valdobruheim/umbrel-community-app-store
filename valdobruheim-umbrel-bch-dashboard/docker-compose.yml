@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: bch-dashboard_server_1
+#    container_name: bch-dashboard_server_1
     ports:
       - "3015:3015"
     environment:

@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: valdobruheim-umbrel-bch-dashboard
 name: BCH Dashboard
-version: 1
+version: "1"
 category: monitoring
 icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/bch-rpc-logo.png?raw=true
 port: 3015
@@ -19,3 +19,6 @@ dependencies: []
 path: ""
 defaultUsername: ""
 defaultPassword: ""
+services:
+  bch-dashboard:
+    container_name: bch-dashboard
