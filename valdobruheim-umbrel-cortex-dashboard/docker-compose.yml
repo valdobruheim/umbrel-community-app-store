@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  cortex-app:
+    build: .
+    container_name: cortex-dashboard
+    ports:
+      - "3099:3099"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - ./cortex-data:/usr/src/app/cortex-data
+    environment:
+      - NODE_ENV=development
+    restart: always
+    # This allows the container to see your local network miners
+    network_mode: "bridge"

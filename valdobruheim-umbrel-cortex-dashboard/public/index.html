@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cortex | Mining Neural Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap');
+        :root { --umbrel-bg: #0b0e14; }
+        .dark body { background-color: var(--umbrel-bg); font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-card { @apply bg-white/5 border border-white/10 rounded-4xl p-6 backdrop-blur-sm transition-all duration-300 hover:border-emerald-500/40; }
+        .stat-label { @apply text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-1; }
+        
+        /* Custom Scrollbar for Drawer */
+        #configDrawer::-webkit-scrollbar { width: 4px; }
+        #configDrawer::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    </style>
+</head>
+<body class="text-white overflow-x-hidden">
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-[#111827]/50 backdrop-blur-lg border-r border-white/5 p-6 flex flex-col fixed h-full z-40">
+            <div class="flex items-center mb-12 px-2">
+                <div class="shrink-0">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">
+                        <path d="M24 4C14.0589 4 6 12.0589 6 22C6 26.5414 7.69171 30.6879 10.4851 33.8291C10.7937 34.1755 10.9708 34.619 10.9897 35.0844L11.2 40C11.2828 42.2144 13.5657 43.5 15.5 42.4L19.8 40C21.1 39.3 22.5 40 24 40C25.5 40 26.9 39.3 28.2 40L32.5 42.4C34.4343 43.5 36.7172 42.2144 36.8 40L37.0103 35.0844C37.0292 34.619 37.2063 34.1755 37.5149 33.8291C40.3083 30.6879 42 26.5414 42 22C42 12.0589 33.9411 4 24 4Z" stroke="url(#cortex_grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M24 14V18M24 26V30M18 22H14M34 22H30M19 17L16 14M32 14L29 17M19 27L16 30M32 30L29 27" stroke="url(#cortex_grad)" stroke-width="2" stroke-linecap="round"/>
+                        <rect x="21" y="19" width="6" height="6" rx="1" fill="url(#cortex_grad)"/>
+                        <defs>
+                            <linearGradient id="cortex_grad" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#10b981"/>
+                                <stop offset="1" stop-color="#06b6d4"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h1 class="font-bold text-lg leading-tight uppercase tracking-tight">Cortex</h1>
+                    <p class="text-[9px] text-emerald-500 font-mono tracking-widest uppercase">Neural Center</p>
+                </div>
+            </div>
+            <nav class="flex-1 space-y-2">
+                <a href="#" class="flex items-center p-4 text-emerald-400 bg-emerald-500/10 rounded-2xl group">
+                    <i class="fa-solid fa-gauge-high w-6 text-lg"></i>
+                    <span class="ml-3 font-semibold">Overview</span>
+                </a>
+                <button onclick="toggleConfig()" class="w-full flex items-center p-4 text-gray-400 hover:text-white hover:bg-white/5 rounded-2xl transition group">
+                    <i class="fa-solid fa-plus w-6 text-lg"></i>
+                    <span class="ml-3 font-semibold">Add Miner</span>
+                </button>
+            </nav>
+
+            <div class="mt-auto p-4 bg-white/5 rounded-2xl border border-white/5">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-2">System Status</p>
+                <div class="flex items-center text-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2"></span>
+                    <span class="text-gray-300">Backend Connected</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="ml-64 flex-1 p-10">
+            <header class="flex justify-between items-center mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight">Mining Network</h2>
+                    <p class="text-gray-500 text-sm mt-1 font-mono">Monitoring Avalon & NerdAxes</p>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="glass-card p-3! px-5! flex items-center">
+                        <span class="text-emerald-500 mr-3 text-xs font-bold uppercase tracking-widest">Network Hash</span>
+                        <span id="total-hashrate" class="font-mono font-bold text-lg">0.00 TH/s</span>
+                    </div>
+                </div>
+            </header>
+
+            <div id="miner-grid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div class="glass-card animate-pulse flex flex-col items-center justify-center min-h-[200px]">
+                    <i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-500 mb-4"></i>
+                    <p class="text-gray-500 text-xs font-mono">Syncing with Nodes...</p>
+                </div>
+            </div>
+
+        </main>
+
+        <div id="configDrawer" class="fixed right-0 top-0 h-full w-96 bg-[#0b0e14]/95 backdrop-blur-2xl border-l border-white/10 transform translate-x-full transition-transform duration-500 z-50 p-8 overflow-y-auto">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-xl font-bold tracking-tight">Node Configuration</h2>
+                <button onclick="toggleConfig()" class="w-10 h-10 rounded-full hover:bg-white/10 transition flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-gray-400"></i>
+                </button>
+            </div>
+            
+            <form id="addMinerForm" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="stat-label">Friendly Name</label>
+                    <input type="text" id="mName" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:outline-none focus:border-emerald-500 transition-all font-medium" placeholder="e.g. Garage Avalon">
+                </div>
+                <div class="space-y-2">
+                    <label class="stat-label">IP Address</label>
+                    <input type="text" id="mIp" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:outline-none focus:border-emerald-500 transition-all font-mono" placeholder="192.168.1.XX">
+                </div>
+                <div class="space-y-2">
+                    <label class="stat-label">Hardware Profile</label>
+                    <select id="mType" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:outline-none focus:border-emerald-500 transition-all appearance-none cursor-pointer">
+                        <option value="avalon">Canaan Avalon (TCP)</option>
+                        <option value="nerdaxe">NerdAxe / BitAxe (HTTP)</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-4 rounded-2xl transition-all shadow-lg shadow-emerald-500/20 active:scale-[0.98]">
+                    Deploy Node to Cortex
+                </button>
+            </form>
+
+            <div class="mt-12">
+                <h3 class="stat-label mb-4">Active Nodes</h3>
+                <div id="activeMinersList" class="space-y-3">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    
+    // Persistent storage for chart data
+    const minerHistory = {};
+
+    // Toggle Configuration Drawer
+    function toggleConfig() {
+        const drawer = document.getElementById('configDrawer');
+        drawer.classList.toggle('translate-x-full');
+    }
+
+    function initSparkline(mId, currentVal, isOnline) {
+        if (!minerHistory[mId]) {
+            minerHistory[mId] = Array(20).fill(0); 
+        }
+        minerHistory[mId].push(currentVal);
+        minerHistory[mId].shift();
+
+        const canvas = document.getElementById(`chart-${mId}`);
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const maxVal = Math.max(...minerHistory[mId]);
+        const axisMax = maxVal > 0 ? maxVal * 1.4 : 10; 
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(20).fill(''),
+                datasets: [{
+                    data: minerHistory[mId],
+                    borderColor: isOnline ? '#10b981' : '#ef4444',
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: isOnline ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: { right: 60, top: 10, bottom: 5 } 
+                },
+                plugins: { 
+                    legend: { display: false }, 
+                    tooltip: { enabled: false } 
+                },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        display: false, // We hide the axis and draw manually
+                        min: 0,
+                        max: axisMax
+                    }
+                },
+                animation: false
+            },
+            plugins: [{
+                id: 'customLabels',
+                afterDatasetsDraw(chart) {
+                    const { ctx, chartArea: { right, top } } = chart;
+                    ctx.save();
+                    ctx.font = 'bold 9px "JetBrains Mono", monospace';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+
+                    // Line 1: MAX (Gold)
+                    ctx.fillStyle = '#fbbf24'; 
+                    ctx.fillText(`Max: ${maxVal.toFixed(1)}`, right + 5, top);
+
+                    // Line 2: CURRENT (White)
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(`Cur: ${currentVal.toFixed(1)}`, right + 5, top + 12);
+
+                    ctx.restore();
+                }
+            }]
+        });
+    }
+
+    // NEW: Function to render the list of miners in the Config Drawer
+    function renderActiveMinersList(miners) {
+        const list = document.getElementById('activeMinersList');
+        list.innerHTML = '';
+        
+        miners.forEach(miner => {
+            const item = `
+                <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+                    <div>
+                        <p class="text-sm font-bold leading-tight">${miner.name}</p>
+                        <p class="text-[10px] font-mono text-gray-500">${miner.ip}</p>
+                    </div>
+                    <button onclick="deleteMiner('${miner.id}')" class="text-gray-500 hover:text-red-400 p-2 transition">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                </div>
+            `;
+            list.innerHTML += item;
+        });
+    }
+
+    // NEW: Function to delete a miner
+    async function deleteMiner(id) {
+        if (!confirm("Permanently remove this node from Cortex?")) return;
+        try {
+            await fetch(`/api/miners/${id}`, { method: 'DELETE' });
+            updateDashboard(); // This will also refresh the active list
+        } catch (err) {
+            console.error("Delete failed:", err);
+        }
+    }
+
+    // Updated: Fetch Stats and refresh both UI parts
+    async function updateDashboard() {
+        try {
+            const response = await fetch('/api/stats');
+            const miners = await response.json();
+            
+            // 1. Update the Active Nodes list in the drawer
+            renderActiveMinersList(miners);
+            
+            // 2. Update the main Dashboard Grid
+            const grid = document.getElementById('miner-grid');
+            grid.innerHTML = '';
+            let totalHash = 0;
+
+            miners.forEach(miner => {
+                let hashValue = 0;
+                let unit = "TH/s";
+                let asicTemp = 0;
+                let vrTemp = 0;
+                let fanSpeed = 0;
+                let fanRpm = 0;
+                let diff = 0;
+                let bestDiff = 0;
+                let bestSessionDiff = 0;
+                let bestDiffUnit = "";
+                let bestSessionDiffUnit = "";
+                
+                if (miner.online && miner.stats) {
+                    if (miner.type === 'avalon') {
+                        hashValue = (miner.stats.SUMMARY[0]['MHS 5s'] / 1000000);
+                        totalHash += hashValue;
+                    } else {
+                        hashValue = (miner.stats.hashrate / 1000);
+                        asicTemp = miner.stats.asicTemp;
+                        vrTemp = miner.stats.vrTemp;
+                        fanRpm = miner.stats.fanRpm;
+                        fanSpeed = miner.stats.fanSpeed;
+                        unit = "TH/s";
+                        totalHash += (hashValue / 1000);
+                        if (miner.stats.bestDiff < 1000) {
+                            bestDiff = miner.stats.bestDiff;
+                            bestDiffUnit = "";
+                        } else if (miner.stats.bestDiff < 1000000) {
+                            bestDiff = miner.stats.bestDiff / 1000;
+                            bestDiffUnit = "K";
+                        } else if (miner.stats.bestDiff >= 1000000000) {
+                            bestDiff = miner.stats.bestDiff / 1000000;
+                            bestDiffUnit = "M";
+                        } else if (miner.stats.bestDiff >= 1000000000000) {
+                            bestDiff = miner.stats.bestDiff / 1000000000;
+                            bestDiffUnit = "G";
+                        } else {
+                            bestDiff = miner.stats.bestDiff / 1000000000000;
+                            bestDiffUnit = "T";
+                        }
+
+                        if (miner.stats.bestSessionDiff < 1000) {
+                            bestSessionDiff = miner.stats.bestSessionDiff;
+                            bestSessionDiffUnit = "";
+                        } else if (miner.stats.bestSessionDiff < 1000000) {
+                            bestSessionDiff = miner.stats.bestSessionDiff / 1000;
+                            bestSessionDiffUnit = "K";
+                        } else if (miner.stats.bestSessionDiff >= 1000000000) {
+                            bestSessionDiff = miner.stats.bestSessionDiff / 1000000;
+                            bestSessionDiffUnit = "M";
+                        } else if (miner.stats.bestSessionDiff >= 1000000000000) {
+                            bestSessionDiff = miner.stats.bestSessionDiff / 1000000000;
+                            bestSessionDiffUnit = "G";
+                        } else {
+                            bestSessionDiff = miner.stats.bestSessionDiff / 1000000000000;
+                            bestSessibestSessionDiffUnitonDiffUnit = "T";
+                        }
+                    }
+                }
+
+                // 1. Create a wrapper div for the card
+                const cardWrapper = document.createElement('div');
+                
+                // 2. Insert your template into the wrapper
+                cardWrapper.innerHTML = `
+                    <div class="glass-card flex flex-col h-full hover:scale-[1.02] transition-transform duration-300">
+                        <div class="flex justify-between items-start border-l -ml-3 border-r -mr-3 border-t border-white/5 bg-black/10 -mx-4 -mt-2 p-4 rounded-t-[2rem]">
+                            <div class="flex-grow">
+                                <span class="stat-label text-emerald-500">${miner.type.toUpperCase()}</span>
+                                <h4 class="text-xl font-bold tracking-tight">${miner.name}</h4>
+                                <a href="http://${miner.ip}" target="_blank" class="text-[10px] font-mono text-blue-400 hover:text-white transition-colors opacity-70">
+                                    ${'http://' + miner.ip}
+                                </a>                               
+                            </div>
+                            <div class="flex items-center space-x-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase ${miner.online ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                                <span class="w-1.5 h-1.5 rounded-full ${miner.online ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}"></span>
+                                <span>${miner.online ? 'Online' : 'Offline'}</span>
+                            </div>
+                        </div>                
+                        
+                        <div class="border-l -ml-3 border-r -mr-3 border-white/5 bg-black/10 pb-3 p-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="text-left">
+                                    <p class="stat-label">Hashrate</p>
+                                    <div class="flex items-baseline space-x-1">
+                                        <span class="text-xl font-mono font-bold text-white">
+                                            ${miner.online ? hashValue.toFixed(1) : '0.0'}
+                                        </span>
+                                        <span class="text-[10px] text-gray-500 font-bold uppercase">${unit}</span>
+                                    </div>
+                                </div>
+                                <div class="w-68 h-16">
+                                    <canvas id="chart-${miner.id}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 border-l -ml-3 border-r -mr-3 border-b border-white/5 bg-black/10 p-4 rounded-b-[2rem]">
+                            <div class="border-r border-white/5">
+                                <p class="stat-label">Thermal</p>
+                                <p class="font-mono text-[11px] text-emerald-500/80">
+                                    ${miner.online ? (asicTemp.toFixed(1) || '--') + '°C / ' + (vrTemp.toFixed(1) || '--') + '°C' : '--'}
+                                </p>
+                            </div>
+                            <div class="border-r border-white/5">
+                                <p class="stat-label">Cooling</p>
+                                <p class="font-mono text-[11px] text-blue-400/80">
+                                    ${miner.online ? (fanSpeed || '--') + '% / ' + (fanRpm + ' RPM' || '--') : '--'}
+                                </p>
+                            </div>
+                            <div class="">
+                                <p class="stat-label">Diff</p>
+                                <p class="font-mono text-[11px] text-blue-400/80">
+                                    ${miner.online ? (bestSessionDiff.toFixed(2) || '--') + ' ' + bestSessionDiffUnit + ' / ' + (bestDiff.toFixed(0) || '--') + ' ' + bestDiffUnit : '--'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // 3. Append the physical element to the grid
+                grid.appendChild(cardWrapper);
+
+                // 4. NOW initialize the chart (Since the canvas now exists in the DOM)
+                initSparkline(miner.id, miner.online ? hashValue : 0, miner.online);
+            });
+
+            document.getElementById('total-hashrate').innerText = totalHash.toFixed(2) + " TH/s";
+
+        } catch (err) {
+            console.error("Cortex Link Error:", err);
+        }
+    }
+
+    // Initialize and Set Polling
+    updateDashboard();
+    setInterval(updateDashboard, 5000);
+
+    // Handle Form Submission
+    document.getElementById('addMinerForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById('mName').value,
+            ip: document.getElementById('mIp').value,
+            type: document.getElementById('mType').value
+        };
+        
+        try {
+            const response = await fetch('/api/miners', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                e.target.reset(); // Clear the form fields
+                toggleConfig();   // Close the drawer
+                updateDashboard(); // Refresh both lists
+            }
+        } catch (err) {
+            console.error("Submission failed:", err);
+        }
+    };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  /* This is where your custom configuration goes now */
+  --font-display: "Satoshi", "sans-serif";
+  --color-brand: #3b82f6;
+}

@@ -1,0 +1,24 @@
+manifestVersion: 1
+id: valdobruheim-umbrel-cortex-dashboard
+name: Cortex Dashboard
+version: "1"
+category: monitoring
+icon: https://github.com/valdobruheim/umbrel-community-app-store/blob/main/galery/bch-rpc-logo.png?raw=true
+port: 3099
+description: >-
+  Cortex Dashboard provides monitor to Avalon and NerdQAxe miners.
+developer: Valdo Bruheim
+website: ""
+submitter: Valdo Bruheim
+submission: https://github.com/valdobruheim/umbrel-community-app-store
+repo: https://github.com/valdobruheim/umbrel-community-app-store/tree/main/valdobruheim-umbrel-cortex-dashboard
+gallery: []
+releaseNotes: >-
+  1 - A simple miners dashboard
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+services:
+  cortex-dashboard:
+    container_name: cortex-dashboard

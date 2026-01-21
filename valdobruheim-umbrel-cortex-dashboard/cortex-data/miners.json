@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "NerdQAxe-01",
+    "ip": "192.168.1.31",
+    "type": "nerdaxe"
+  },
+  {
+    "id": 2,
+    "name": "NerdQAxe-02",
+    "ip": "192.168.1.32",
+    "type": "nerdaxe"
+  },
+  {
+    "id": 3,
+    "name": "NerdQAxe-03",
+    "ip": "192.168.1.33",
+    "type": "nerdaxe"
+  },
+  {
+    "id": 4,
+    "name": "NerdQAxeHydro-01",
+    "ip": "192.168.1.34",
+    "type": "nerdaxe"
+  },
+  {
+    "id": 5,
+    "name": "NerdQAxeHydro-02",
+    "ip": "192.168.1.35",
+    "type": "nerdaxe"
+  },
+  {
+    "id": 6,
+    "name": "Nano3s-01",
+    "ip": "192.168.1.130",
+    "type": "avalon"
+  },
+  {
+    "id": 1768818246573,
+    "name": "AvalonQ-01",
+    "ip": "192.168.1.71",
+    "type": "avalon"
+  }
+]
